@@ -1,0 +1,6 @@
+{
+  "AppSyncApiName": "tcc22",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthModeLastUpdated": "2024-01-16T17:52:27.167Z"
+}
