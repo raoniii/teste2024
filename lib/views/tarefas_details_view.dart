@@ -19,7 +19,8 @@ class TarefaDetailsView extends StatelessWidget {
         child: Card(
           elevation: 10.0, // Aumenta a elevação para dar uma sensação de carta
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0), // Borda arredondada para se parecer com uma carta
+            borderRadius: BorderRadius.circular(
+                16.0), // Borda arredondada para se parecer com uma carta
           ),
           margin: EdgeInsets.all(16.0),
           child: Padding(
@@ -28,7 +29,7 @@ class TarefaDetailsView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Descrição:',
+                  'Descriçã1o:',
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
@@ -64,6 +65,7 @@ class TarefaDetailsView extends StatelessWidget {
                 SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () {
+                    print("clique no botao editar");
                     _startEditing(context);
                   },
                   child: Text('Editar Tarefa'),
@@ -80,12 +82,14 @@ class TarefaDetailsView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+
         return EditTarefaDialog(
           initialText: tarefa.infor,
+
           onSave: (String newText) {
-            // Atualize a tarefa com o novo texto aqui
+            print("clique em salvar");
             BlocProvider.of<TarefasCubit>(context)
-                .updateTarefaText(tarefa, newText);
+                .updateTarefasInfor(tarefa, newText);
           },
         );
       },

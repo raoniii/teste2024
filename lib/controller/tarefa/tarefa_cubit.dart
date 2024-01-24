@@ -3,7 +3,6 @@ import 'package:teste2024/controller/tarefa/tarefa_repository.dart';
 
 import '../../models/Tarefa.dart';
 
-
 abstract class TarefasState {}
 
 class LoadingTarefas extends TarefasState {}
@@ -25,7 +24,6 @@ abstract class TarefasEvent {}
 class LoadTarefasEvent extends TarefasEvent {}
 
 class PullToRefreshEvent extends TarefasEvent {}
-
 
 class LoadingTarefasState extends TarefasState {}
 
@@ -63,26 +61,23 @@ class TarefasCubit extends Cubit<TarefasState> {
     await _tarefasRepo.createTarefa(titulo, infor);
   }
 
+  void editorTarefas(Tarefa tarefa, String titulo, String infor) async {
+    await _tarefasRepo.editorTarefa(tarefa.id, titulo, infor);
+  }
+
+
   void updateTarefasIsComplete(Tarefa tarefa, bool IsComplete) async {
     await _tarefasRepo.updateTarefaIsComplete(tarefa, IsComplete);
   }
 
-  void updateTarefaText(Tarefa tarefa, String newText) async {
-    try {
-      await _tarefasRepo.updateTarefaText(tarefa, newText);
-      // Recarregue as tarefas após a atualização
-      getTarefas();
-    } catch (e) {
-      emit(ListTarefasFailure(exception: Exception()));
-    }
+  void updateTarefasInfor(Tarefa tarefa, String Infor) async {
+    await _tarefasRepo.updateTarefaInfor(tarefa, Infor);
   }
-
 
   void observeTarefa() {
     final tarefasStream = _tarefasRepo.observeTarefas();
     tarefasStream.listen((_) => getTarefas());
   }
-
 
   void deleteTarefas(Tarefa tarefa) async {
     await _tarefasRepo.deleteTarefa(tarefa);
@@ -96,7 +91,8 @@ class TarefasBloc extends Bloc<TarefasEvent, TarefasState> {
   TarefasBloc() : super(LoadedTarefasState(tarefas: [])) {
     on((event, emit) async {
       try {
-        List<Tarefa>? data = (await _tarefasRepo.observeTarefas().toList()).cast<Tarefa>();
+        List<Tarefa>? data =
+            (await _tarefasRepo.observeTarefas().toList()).cast<Tarefa>();
 
         if (event is PullToRefreshEvent || event is LoadTarefasEvent) {
           emit(LoadedTarefasState(tarefas: data));
@@ -107,8 +103,3 @@ class TarefasBloc extends Bloc<TarefasEvent, TarefasState> {
     });
   }
 }
-
-
-
-
-

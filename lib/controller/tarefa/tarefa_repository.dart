@@ -31,8 +31,18 @@ class TarefaRepository {
     }
   }
 
-  Future<void> updateTarefaText(Tarefa tarefa, String newText) async {
-    final updatedTarefa = tarefa.copyWith(infor: newText);
+  Future<void> editorTarefa(String id, String titulo, String infor) async {
+    final existingTarefa = Tarefa(id: id, titulo: titulo, infor: infor, IsComplete: false);
+    try {
+      await Amplify.DataStore.save(existingTarefa);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+
+  Future<void> updateTarefaInfor(Tarefa tarefa, String infor) async {
+    final updatedTarefa = tarefa.copyWith(infor: infor);
     try {
       await Amplify.DataStore.save(updatedTarefa);
     } catch (e) {

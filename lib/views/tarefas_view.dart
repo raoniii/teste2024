@@ -216,13 +216,34 @@ class _TarefasViewState extends State<TarefasView> {
             elevation: 4.0,
             child: ListTile(
               title: Text(tarefa.titulo),
-              subtitle: Text(tarefa.infor),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(tarefa.infor),
+                  SizedBox(height: 8.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) => _editorTarefasView(tarefa),
+                          );
+                        },
+                        child: Text('Editar'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => EditScreen(index: index)
-                  ),
+                      builder: (context) => TarefaDetailsView(
+                            tarefa: tarefa,
+                          )),
                 );
               },
               trailing: Column(
@@ -252,6 +273,61 @@ class _TarefasViewState extends State<TarefasView> {
           ),
         );
       },
+    );
+  }
+
+  Widget _editorTarefasView(Tarefa tarefa) {
+    _titleController.text = tarefa.titulo;
+    _inforController.text = tarefa.infor;
+
+    return Column(
+      children: [
+        TextField(
+          controller: _titleController,
+          decoration: InputDecoration(hintText: 'Nome da tarefa'),
+          textAlign: TextAlign.center,
+        ),
+        TextField(
+          controller: _inforController,
+          decoration: InputDecoration(hintText: 'Informação da tarefa'),
+          textAlign: TextAlign.center,
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.deepPurple, // background (button) color
+            foregroundColor: Colors.white, // foreground (text) color
+          ),
+          onPressed: () {
+            if (_titleController.text.trim().isEmpty ||
+                _inforController.text.trim().isEmpty) {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Erro"),
+                    content:
+                        Text("Preencha os campos antes de salvar a tarefa."),
+                    actions: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('OK'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            } else {
+              BlocProvider.of<TarefasCubit>(context)
+                  .updateTarefasInfor(tarefa, _inforController.text);
+
+              Navigator.of(context).pop();
+            }
+          },
+          child: Text('Salvar Tarefa'),
+        ),
+      ],
     );
   }
 }
